@@ -26,11 +26,11 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../data/YourDatabaseName.db')
-df = pd.read_sql_table('YourTableName', engine)
+engine = create_engine('sqlite:///../data/DisasterResponse.db')
+df = pd.read_sql_table('messages', engine)
 
 # load model
-model = joblib.load("../models/your_model_name.pkl")
+model = joblib.load("../models/classifier.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -42,6 +42,15 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+    # 
+    categories_counts = df.drop(['id','message','original','genre'], axis=1).mean()
+    categories_names = list(categories_counts.index)
+    
+    #df_aid = [df['aid_related'] == 1]
+    df_aid = df[df['aid_related'] == 1]
+    aid_counts = df_aid.groupby('genre').count()['message']
+    aid_names = list(aid_counts.index)
+    
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -63,7 +72,44 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+        {
+            'data': [
+                Bar(
+                    x=categories_names,
+                    y=categories_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of Message categories',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Category"
+                }
+            }
+        },
+        {
+            'data': [
+                Bar(
+                    x=aid_names,
+                    y=aid_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Distribution of genres for aid related messages',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Genre"
+                }
+            }
         }
+        
     ]
     
     # encode plotly graphs in JSON
