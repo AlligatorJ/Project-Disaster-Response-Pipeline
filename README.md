@@ -42,6 +42,8 @@ Run the following commands in the project's root directory to set up your databa
 ### data:
 
 process_data.py: The data cleaning pipeline
+disaster_messages.csv: Data of the messages
+disaster_categories.csv: Data of the categories
 
 ### models:
 
